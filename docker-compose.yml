@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  # PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: _docker/app/Dockerfile
+    volumes:
+      - "./:/var/www"
+      - "./_docker/app/local.ini:/usr/local/etc/php/conf.d/local.ini"
+    container_name: book_app
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:8000"
+    depends_on:
+      - mysql
+    networks:
+      - local-network
+
+  mysql:
+    image: mysql:8
+    restart: unless-stopped
+    container_name: book_db
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_PASS}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PASS}"
+    volumes:
+      - "mysql:/var/lib/mysql/"
+    networks:
+      - local-network
+
+# Docker Volumes
+volumes:
+  mysql:
+    driver: local
+
+# Docker Networks
+networks:
+  local-network:
+    name: local-network
+    driver: bridge
