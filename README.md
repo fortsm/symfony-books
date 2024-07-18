@@ -38,6 +38,18 @@ cp .env.dist .env
 docker compose up -d --build
 ```
 
+## Запустить миграции
+
+```sh
+docker exec -it book_app php bin/console --no-interaction doctrine:migrations:migrate
+```
+
+## Заполнение БД тестовыми данными
+
+```sh
+docker exec -it book_app php bin/console --no-interaction doctrine:fixtures:load
+```
+
 ## Запустить сервер
 
 ```sh

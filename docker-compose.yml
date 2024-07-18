@@ -25,7 +25,7 @@ services:
     container_name: book_db
     tty: true
     ports:
-      - "3306:3306"
+      - "${DB_PORT}:${DB_PORT}"
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_PASS}"
       MYSQL_DATABASE: "${DB_DATABASE}"
