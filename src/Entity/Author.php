@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
@@ -20,6 +21,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Get(normalizationContext: ['groups' => 'author:item']),
         new GetCollection(normalizationContext: ['groups' => 'author:list']),
         new Post(normalizationContext: ['groups' => 'author:write']),
+        new Delete(),
     ],
     order: ['id' => 'ASC'],
     paginationEnabled: false,

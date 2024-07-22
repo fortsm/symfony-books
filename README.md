@@ -69,8 +69,8 @@ docker exec -it book_app symfony server:start --no-tls
 ```sh
 curl -X 'POST' \
   'http://localhost/api/authors' \
-  -H 'accept: application/ld+json' \
-  -H 'Content-Type: application/ld+json' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
   -d '{
   "firstname": "Борис",
   "lastname": "Акунин"
@@ -82,13 +82,53 @@ curl -X 'POST' \
 ```sh
 curl -X 'POST' \
   'http://localhost/api/books' \
-  -H 'accept: application/ld+json' \
-  -H 'Content-Type: application/ld+json' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
   -d '{
   "name": "Поэма об осени",
   "year": 2024,
-  "publisher": "api/publishers/1"
+  "publisher": "api/publishers/1",
+  "authors": [
+    "api/authors/1",
+    "api/authors/2"
+  ]
 }'
+```
+
+### Редактирование издателя
+
+```sh
+curl -X 'PATCH' \
+  'http://localhost/api/publishers/2' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "address": "Санкт-Петербург, Литейный пр., 47"
+}'
+```
+
+### Удаление книги
+
+```sh
+curl -X 'DELETE' \
+  'http://localhost/api/books/4' \
+  -H 'accept: */*'
+```
+
+### Удаление автора
+
+```sh
+curl -X 'DELETE' \
+  'http://localhost/api/authors/4' \
+  -H 'accept: */*'
+```
+
+### Удаление издателя
+
+```sh
+curl -X 'DELETE' \
+  'http://localhost/api/publishers/3' \
+  -H 'accept: */*'
 ```
 
 ## Остановить контейнеры

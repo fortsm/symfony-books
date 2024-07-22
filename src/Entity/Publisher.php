@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use App\Repository\PublisherRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,11 +15,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PublisherRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['publisher:list', 'publisher:item']],
-    denormalizationContext: ['groups' => ['publisher.write']],
+    // normalizationContext: ['groups' => ['publisher:list', 'publisher:item']],
+    // denormalizationContext: ['groups' => ['publisher.write']],
     operations: [
         new Get(normalizationContext: ['groups' => 'publisher:item']),
-        new GetCollection(normalizationContext: ['groups' => 'publisher:list'])
+        new GetCollection(normalizationContext: ['groups' => 'publisher:list']),
+        new Patch(normalizationContext: ['groups' => 'publisher:write']),
+        new Delete(),
     ],
     order: ['id' => 'ASC'],
     paginationEnabled: false,
@@ -30,7 +34,13 @@ class Publisher
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['book:list', 'book:item', 'publisher:list', 'publisher:item', 'publisher.write'])]
+    #[Groups([
+        'publisher:list',
+        'publisher:item',
+        'publisher.write',
+        'book:list',
+        'book:item',
+    ])]
     private ?string $name = null;
 
     #[Groups(['publisher:item', 'publisher.write'])]
@@ -41,7 +51,6 @@ class Publisher
      * @var Collection<int, Book>
      */
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'publisher')]
-    #[Groups(['publisher:item'])]
     private Collection $books;
 
     public function __construct()
@@ -81,6 +90,7 @@ class Publisher
     /**
      * @return Collection<int, Book>
      */
+    #[Groups(['publisher:item'])]
     public function getBooks(): Collection
     {
         return $this->books;

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
@@ -21,6 +22,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Get(normalizationContext: ['groups' => 'book:item']),
         new GetCollection(normalizationContext: ['groups' => 'book:list']),
         new Post(normalizationContext: ['groups' => 'book:write']),
+        new Delete(),
     ],
     order: ['id' => 'ASC'],
     paginationEnabled: false,
@@ -33,7 +35,13 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['book:list', 'book:item', 'book:write', 'author:item'])]
+    #[Groups([
+        'book:list',
+        'book:item',
+        'book:write',
+        'author:item',
+        'publisher:item',
+    ])]
     private ?string $name = null;
 
     #[ORM\Column]
@@ -122,6 +130,7 @@ class Book
         foreach ($authors as $author) {
             $this->addAuthor($author);
         }
+
         return $this;
     }
 
