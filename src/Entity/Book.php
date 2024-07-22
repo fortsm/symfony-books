@@ -2,12 +2,29 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\BookRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
+#[ApiResource(
+    description: 'Книга',
+    // normalizationContext: ['groups' => ['book:list', 'book:item']],
+    // denormalizationContext: ['groups' => ['book.write']],
+    operations: [
+        new Get(normalizationContext: ['groups' => 'book:item']),
+        new GetCollection(normalizationContext: ['groups' => 'book:list']),
+        new Post(normalizationContext: ['groups' => 'book:write']),
+    ],
+    order: ['id' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Book
 {
     #[ORM\Id]
@@ -16,19 +33,23 @@ class Book
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['book:list', 'book:item', 'book:write', 'author:item'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['book:list', 'book:item', 'book:write'])]
     private ?int $year = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['book:list', 'book:item', 'book:write'])]
     private ?Publisher $publisher = null;
 
     /**
      * @var Collection<int, Author>
      */
     #[ORM\ManyToMany(targetEntity: Author::class, mappedBy: 'books')]
+    #[Groups(['book:list', 'book:item'])]
     private Collection $authors;
 
     public function __construct()
@@ -92,6 +113,15 @@ class Book
             $author->addBook($this);
         }
 
+        return $this;
+    }
+
+    #[Groups(['book:write'])]
+    public function setAuthors(array $authors): static
+    {
+        foreach ($authors as $author) {
+            $this->addAuthor($author);
+        }
         return $this;
     }
 

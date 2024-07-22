@@ -56,6 +56,41 @@ docker exec -it book_app php bin/console --no-interaction doctrine:fixtures:load
 docker exec -it book_app symfony server:start --no-tls
 ```
 
+## Запросы к API
+
+[Документация API](http://localhost/api)
+
+### Получение всех книг (помимо полей книги, возвращать фамилию автора и наименование издательства)
+
+[Ссылка](http://localhost/api/books)
+
+### Создание нового автора
+
+```sh
+curl -X 'POST' \
+  'http://localhost/api/authors' \
+  -H 'accept: application/ld+json' \
+  -H 'Content-Type: application/ld+json' \
+  -d '{
+  "firstname": "Борис",
+  "lastname": "Акунин"
+}'
+```
+
+### Создание книги с привязкой к существующему автору
+
+```sh
+curl -X 'POST' \
+  'http://localhost/api/books' \
+  -H 'accept: application/ld+json' \
+  -H 'Content-Type: application/ld+json' \
+  -d '{
+  "name": "Поэма об осени",
+  "year": 2024,
+  "publisher": "api/publishers/1"
+}'
+```
+
 ## Остановить контейнеры
 
 ```sh

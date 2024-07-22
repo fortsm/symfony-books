@@ -2,12 +2,26 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\PublisherRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PublisherRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['publisher:list', 'publisher:item']],
+    denormalizationContext: ['groups' => ['publisher.write']],
+    operations: [
+        new Get(normalizationContext: ['groups' => 'publisher:item']),
+        new GetCollection(normalizationContext: ['groups' => 'publisher:list'])
+    ],
+    order: ['id' => 'ASC'],
+    paginationEnabled: false,
+)]
 class Publisher
 {
     #[ORM\Id]
@@ -16,8 +30,10 @@ class Publisher
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['book:list', 'book:item', 'publisher:list', 'publisher:item', 'publisher.write'])]
     private ?string $name = null;
 
+    #[Groups(['publisher:item', 'publisher.write'])]
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
@@ -25,6 +41,7 @@ class Publisher
      * @var Collection<int, Book>
      */
     #[ORM\OneToMany(targetEntity: Book::class, mappedBy: 'publisher')]
+    #[Groups(['publisher:item'])]
     private Collection $books;
 
     public function __construct()
