@@ -131,6 +131,18 @@ curl -X 'DELETE' \
   -H 'accept: */*'
 ```
 
+### Команда по наполнению БД тестовыми данными (несколько авторов/книг/издательств)
+
+```sh
+docker exec -it book_app php bin/console --no-interaction doctrine:fixtures:load
+```
+
+### Команда по удалению всех авторов, у которых нет книг
+
+```sh
+docker exec -it book_app php bin/console app:delete-authors
+```
+
 ## Остановить контейнеры
 
 ```sh
