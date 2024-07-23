@@ -15,8 +15,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PublisherRepository::class)]
 #[ApiResource(
-    // normalizationContext: ['groups' => ['publisher:list', 'publisher:item']],
-    // denormalizationContext: ['groups' => ['publisher.write']],
     operations: [
         new Get(normalizationContext: ['groups' => 'publisher:item']),
         new GetCollection(normalizationContext: ['groups' => 'publisher:list']),

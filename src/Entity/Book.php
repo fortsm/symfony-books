@@ -16,8 +16,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 #[ApiResource(
     description: 'Книга',
-    // normalizationContext: ['groups' => ['book:list', 'book:item']],
-    // denormalizationContext: ['groups' => ['book.write']],
     operations: [
         new Get(normalizationContext: ['groups' => 'book:item']),
         new GetCollection(normalizationContext: ['groups' => 'book:list']),
@@ -48,8 +46,8 @@ class Book
     #[Groups(['book:list', 'book:item', 'book:write'])]
     private ?int $year = null;
 
-    #[ORM\ManyToOne(inversedBy: 'books')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Publisher::class, inversedBy: 'books')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['book:list', 'book:item', 'book:write'])]
     private ?Publisher $publisher = null;
 

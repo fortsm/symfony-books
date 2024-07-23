@@ -2,16 +2,12 @@ api_platform:
   title: Библиотека
   version: 1.0.0
   formats:
-    # jsonld: ["application/ld+json"]
     json: ["application/json"]
-    # jsonapi: ["application/vnd.api+json"]
+    jsonld: ["application/ld+json"]
   patch_formats:
     json: ["application/json"]
-    # json: ["application/merge-patch+json"]
-    # jsonapi: ["application/vnd.api+json"]
   docs_formats:
     json: ["application/json"]
-    # jsonopenapi: ["application/vnd.openapi+json"]
     html: ["text/html"]
   defaults:
     stateless: true
